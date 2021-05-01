@@ -1,29 +1,33 @@
-import spotipy
-import pandas as pd
-from spotipy.oauth2 import SpotifyClientCredentials
-from collections import defaultdict
-import numpy as np
 import os
-from joblib import dump, load
+import warnings
+from collections import defaultdict
 
+import numpy as np
+import pandas as pd
+import spotipy
 from dotenv import load_dotenv
+from joblib import load
+from scipy.spatial.distance import cdist
+from spotipy.oauth2 import SpotifyClientCredentials
 
 load_dotenv(override=True)
 
-import warnings
 warnings.filterwarnings("ignore")
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=os.environ["SPOTIFY_CLIENT_ID"],
                                                            client_secret=os.environ["SPOTIFY_CLIENT_SECRET"]))
 
-song_cluster_pipeline=load('song_cluster')
+song_cluster_pipeline = load('song_cluster')
 data = pd.read_csv("data.csv")
 
+
 def get_decade(year):
-    period_start = int(year/10) * 10
+    period_start = int(year / 10) * 10
     decade = '{}s'.format(period_start)
     return decade
 
+
 data['decade'] = data['year'].apply(get_decade)
+
 
 def find_song(name, year):
     song_data = defaultdict()
@@ -46,11 +50,6 @@ def find_song(name, year):
 
     return pd.DataFrame(song_data)
 
-
-from collections import defaultdict
-from sklearn.metrics import euclidean_distances
-from scipy.spatial.distance import cdist
-import difflib
 
 number_cols = ['valence', 'year', 'acousticness', 'danceability', 'duration_ms', 'energy', 'explicit',
                'instrumentalness', 'key', 'liveness', 'loudness', 'mode', 'popularity', 'speechiness', 'tempo']
@@ -109,4 +108,4 @@ def recommend_songs(song_list, spotify_data, n_songs=10):
     return rec_songs[metadata_cols].to_dict(orient='records')
 
 
-print(recommend_songs([{'name': 'Say So', 'year':2020}],  data))
+print(recommend_songs([{'name': 'Say So', 'year': 2020}], data))
