@@ -10,7 +10,7 @@ from joblib import load
 from scipy.spatial.distance import cdist
 from spotipy.oauth2 import SpotifyClientCredentials
 
-load_dotenv(override=True)
+load_dotenv()
 
 warnings.filterwarnings("ignore")
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=os.environ["SPOTIFY_CLIENT_ID"],
