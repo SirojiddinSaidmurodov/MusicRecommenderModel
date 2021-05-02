@@ -1,3 +1,4 @@
+import json
 import os
 import warnings
 from collections import defaultdict
@@ -108,4 +109,7 @@ def recommend_songs(song_list, spotify_data, n_songs=10):
     return rec_songs[metadata_cols].to_dict(orient='records')
 
 
-print(recommend_songs([{'name': 'Say So', 'year': 2020}], data))
+recommendation = recommend_songs([{'name': "Все танцуют локтями", 'year': 2013}], data)
+print(json.dumps(recommendation, indent=4))
+print("########################Spotify Query Example##################")
+print(json.dumps(sp.search(q='track: {} year: {}'.format("Все Танцуют Локтями", 2013), limit=1), indent=4))
