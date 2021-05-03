@@ -15,19 +15,11 @@ load_dotenv()
 
 warnings.filterwarnings("ignore")
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=os.environ["SPOTIFY_CLIENT_ID"],
-                                                           client_secret=os.environ["SPOTIFY_CLIENT_SECRET"]))
+                                                           client_secret=os.environ["SPOTIFY_CLIENT_SECRET"]),
+                     language='rus')
 
 song_cluster_pipeline = load('song_cluster')
 data = pd.read_csv("data.csv")
-
-
-def get_decade(year):
-    period_start = int(year / 10) * 10
-    decade = '{}s'.format(period_start)
-    return decade
-
-
-data['decade'] = data['year'].apply(get_decade)
 
 
 def find_song(name, year):
@@ -112,4 +104,5 @@ def recommend_songs(song_list, spotify_data, n_songs=10):
 recommendation = recommend_songs([{'name': "Все танцуют локтями", 'year': 2013}], data)
 print(json.dumps(recommendation, indent=4))
 print("########################Spotify Query Example##################")
-print(json.dumps(sp.search(q='track: {} year: {}'.format("Все Танцуют Локтями", 2013), limit=1), indent=4))
+result = sp.search(q='track: {} year: {}'.format("Все Танцуют Локтями", 2013), limit=1)
+print(find_song("Все Танцуют Локтями", 2013))
